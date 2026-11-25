@@ -806,3 +806,29 @@ td {
 a.logo {
     text-decoration: none
 }
+
+.hero .greet {
+    overflow-wrap: anywhere
+}
+
+.hero .who {
+    color: #ffe08a
+}
+
+.hero .idline {
+    margin: 0 0 6px;
+    opacity: .92;
+    font-size: 14px
+}
+
+.hero .idchip {
+    background: rgba(255, 255, 255, .18);
+    border-radius: 8px;
+    padding: 2px 9px;
+    font: 13px ui-monospace, Menlo, monospace
+}
+
+.hero .tagline {
+    font-weight: 700;
+    margin: 10px 0 4px
+}

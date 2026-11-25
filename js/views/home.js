@@ -47,9 +47,18 @@ export function card(f) {
   </div>`;
 }
 
+function greetV() {
+  const u = S.user;
+  if (!u) return `<h1>Fly together. Pay less.</h1>`;
+  const who = u.admin ? "Admin" : esc(u.name);
+  return `<h1 class="greet">Welcome${u.admin ? "" : " back"}, <span class="who">${who}</span> 👋</h1>` +
+    (u.admin ? "" : `<div class="idline">Your ID: <span class="idchip">${esc(u.id)}</span></div>`) +
+    `<div class="tagline">Fly together. Pay less.</div>`;
+}
+
 export function homeV() {
   const fl = visible();
-  return `<div class="hero"><h1>Fly together. Pay less.</h1><p>Airfares keep climbing. Join a SkyPool with fellow travellers on the same flight — the bigger the pool, the lower everyone’s fare.</p></div>` + calcV() + toolsV() +
+  return `<div class="hero">${greetV()}<p>Airfares keep climbing. Join a SkyPool with fellow travellers on the same flight — the bigger the pool, the lower everyone’s fare.</p></div>` + calcV() + toolsV() +
     (fl.length ? `<div class="grid">${fl.map(card).join("")}</div>` : `<div class="empty card">${S.flights.length ? "No pools match your filters." : "No flight pools yet."} ${S.user?.admin ? "Add one from the Admin panel." : "Check back soon!"}</div>`);
 }
 
