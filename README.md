@@ -4,7 +4,7 @@
 
 SkyPool lets travellers **group-book the same flight** so everyone gets a lower fare. Every person who joins a flight pool unlocks a bigger discount for the whole group: **2.5% off per member, up to 30%**.
 
-> Built for a hackathon. **Live demo:** _add your Vercel URL here_
+**Live demo:** [skypool-blond.vercel.app](https://skypool-blond.vercel.app)
 
 ![Welcome page](docs/welcome.png)
 
@@ -122,6 +122,3 @@ This is a hackathon prototype, so read this before using it with real data:
 - Email / SMS / push notifications
 - Automatic pool refunds if a pool does not reach its minimum size
 - Route-based pool suggestions and flexible-date matching
-
-## Team
-_Add your team name and members here._
