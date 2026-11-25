@@ -1,0 +1,7 @@
+{
+  "name": "skypool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SkyPool – group-book flights, pay less",
+  "scripts": { "dev": "vercel dev" }
+}
