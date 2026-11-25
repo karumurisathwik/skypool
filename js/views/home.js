@@ -9,16 +9,31 @@ export async function join(fid) {
   await store.set("joins", fid + "_" + S.user.id, { flightId: fid, uid: S.user.id, confirmed: false, at: Date.now() });
 }
 
+const cities = () => [...new Set(S.flights.flatMap(f => [f.from, f.to]))].sort();
+const filtersOn = () => !!(S.q.trim() || S.fa || S.fo || S.fz || S.fd || S.favOnly);
+/* drop a selected filter whose flights no longer exist (e.g. admin deleted them) so the dropdown and results never disagree */
+function sanitizeFilters() {
+  const air = S.flights.map(f => f.airline), cs = cities();
+  if (S.fa && !air.includes(S.fa)) S.fa = "";
+  if (S.fo && !cs.includes(S.fo)) S.fo = "";
+  if (S.fz && !cs.includes(S.fz)) S.fz = "";
+}
+export function clearFilters() { S.q = ""; S.fa = ""; S.fo = ""; S.fz = ""; S.fd = ""; S.favOnly = false; render() }
+export function swapRoute() { const t = S.fo; S.fo = S.fz; S.fz = t; render() }
+
 function visible() {
+  sanitizeFilters();
   const q = S.q.toLowerCase().trim(), fv = S.user && !S.user.admin ? favs() : [], pr = f => unitPrice(f, Math.max(members(f).length, 1));
-  return S.flights.filter(f => (!q || [f.airline, f.number, f.from, f.to].join(" ").toLowerCase().includes(q)) && (!S.fa || f.airline === S.fa) && (!S.fz || f.to === S.fz) && (!S.fd || f.date >= S.fd) && (!S.favOnly || fv.includes(f.id)))
+  return S.flights.filter(f => (!q || [f.airline, f.number, f.from, f.to].join(" ").toLowerCase().includes(q)) && (!S.fa || f.airline === S.fa) && (!S.fo || f.from === S.fo) && (!S.fz || f.to === S.fz) && (!S.fd || f.date >= S.fd) && (!S.favOnly || fv.includes(f.id)))
     .sort((a, b) => S.sort === "fare" ? pr(a) - pr(b) : a.date.localeCompare(b.date));
 }
 function toolsV() {
   const u = k => [...new Set(S.flights.map(f => f[k]))].sort(), opt = (a, v, all) => `<option value="">${all}</option>` + a.map(x => `<option ${x === v ? "selected" : ""}>${esc(x)}</option>`).join("");
   return `<div class="tools"><input class="grow" id="sq" placeholder="🔍 Search airline, flight no., city…" value="${esc(S.q)}" oninput="S.q=this.value;render()">
   <select id="sa" onchange="S.fa=this.value;render()">${opt(u("airline"), S.fa, "All airlines")}</select>
-  <select id="sz" onchange="S.fz=this.value;render()">${opt(u("to"), S.fz, "All destinations")}</select>
+  <select id="so" title="From" onchange="S.fo=this.value;render()">${opt(cities(), S.fo, "From: any city")}</select>
+  <button class="btn ghost swap" title="Swap From and To" aria-label="Swap From and To" onclick="swapRoute()">⇄</button>
+  <select id="sz" title="To" onchange="S.fz=this.value;render()">${opt(cities(), S.fz, "To: any city")}</select>
   <input id="sd" type="date" title="Departing on or after" value="${esc(S.fd)}" onchange="S.fd=this.value;render()">
   <select id="ss" onchange="S.sort=this.value;render()"><option value="date">Earliest date</option><option value="fare" ${S.sort === "fare" ? "selected" : ""}>Lowest fare</option></select>
   ${S.user && !S.user.admin ? `<button class="btn ${S.favOnly ? "" : "ghost"}" onclick="S.favOnly=!S.favOnly;render()">★ Saved</button>` : ""}</div>`;
@@ -59,7 +74,7 @@ function greetV() {
 export function homeV() {
   const fl = visible();
   return `<div class="hero">${greetV()}<p>Airfares keep climbing. Join a SkyPool with fellow travellers on the same flight — the bigger the pool, the lower everyone’s fare.</p></div>` + calcV() + toolsV() +
-    (fl.length ? `<div class="grid">${fl.map(card).join("")}</div>` : `<div class="empty card">${S.flights.length ? "No pools match your filters." : "No flight pools yet."} ${S.user?.admin ? "Add one from the Admin panel." : "Check back soon!"}</div>`);
+    (fl.length ? `<div class="grid">${fl.map(card).join("")}</div>` : `<div class="empty card">${S.flights.length ? "No pools match your filters." + (filtersOn() ? '<br><br><button class="btn ghost" onclick="clearFilters()">Clear filters</button>' : "") : "No flight pools yet." + (S.user?.admin ? " Add one from the Admin panel." : " Check back soon!")}</div>`);
 }
 
-Object.assign(window, { toggleFav, join });
+Object.assign(window, { toggleFav, join, clearFilters, swapRoute });

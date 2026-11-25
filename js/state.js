@@ -5,7 +5,7 @@ export const $ = s => document.querySelector(s);
 export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 export const S = {
-  view: "home", user: null, flights: [], joins: [], msg: "", tab: "flights", q: "", fa: "", fz: "", fd: "",
+  view: "home", user: null, flights: [], joins: [], msg: "", tab: "flights", q: "", fa: "", fo: "", fz: "", fd: "",
   sort: "date", favOnly: false, bell: false, cf: "", ct: 2, mg: "", names: {}, lv: null, dl: null, _k: "", rm: null, pq: ""
 };
 try { const t = localStorage.getItem("sp_theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}

@@ -832,3 +832,9 @@ a.logo {
     font-weight: 700;
     margin: 10px 0 4px
 }
+
+.tools .swap {
+    flex: 0 0 auto;
+    padding: 9px 12px;
+    line-height: 1
+}
