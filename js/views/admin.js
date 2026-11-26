@@ -1,4 +1,4 @@
-import { S, $, esc, store, sha, COLORS, members, unitPrice, inr, shrink, fmtDate } from "../state.js";
+import { S, $, esc, store, sha, COLORS, members, unitPrice, inr, shrink, fmtDate, badge } from "../state.js";
 import { render, go, toast } from "../ui.js";
 import { card } from "./home.js";
 import "../actions.js";
@@ -77,7 +77,8 @@ export function adminV() {
   const t = S.tab, reqN = S.joins.filter(j => j.cancelReq && S.flights.some(f => f.id === j.flightId)).length;
   return `<h2>Admin panel</h2><div class="tabs"><button class="btn ${t === "flights" ? "" : "ghost"}" onclick="go('admin','flights')">Published pools</button><button class="btn ${t === "add" ? "" : "ghost"}" onclick="go('admin','add')">Add flight</button><button class="btn ${t === "people" ? "" : "ghost"}" onclick="go('admin','people')">People</button><button class="btn ${t === "requests" ? "" : "ghost"}" onclick="go('admin','requests')">Cancel requests${reqN ? ` (${reqN})` : ""}</button></div>` +
     statsV() + (t === "requests" ? requestsV() : t === "people" ? peopleV() : t === "add" ? `<form class="card" style="margin:0;max-width:640px" onsubmit="addFlight(event)">
-  <div class="two"><div><label>Airline name</label><input id="al" required placeholder="IndiGo"></div><div><label>Flight number</label><input id="fn" required placeholder="6E-204"></div></div>
+  <div class="two"><div><label>Airline name</label><input id="al" required placeholder="IndiGo" oninput="logoPreview()"></div><div><label>Flight number</label><input id="fn" required placeholder="6E-204" oninput="logoPreview()"></div></div>
+  <div class="row" style="margin:8px 0 0"><span id="lp"></span><span class="note" style="margin:0">The airline logo is found automatically from the name or the flight number (e.g. 6E-204). Upload an image below to override it.</span></div>
   <div class="two"><div><label>From</label><input id="fr" required placeholder="DEL"></div><div><label>To</label><input id="to" required placeholder="BOM"></div></div>
   <div class="two"><div><label>Departure date</label><input id="dt" type="date" required></div><div><label>Time</label><input id="tm" type="time" required></div></div>
   <div class="two"><div><label>Base fare per person (₹)</label><input id="fa" type="number" min="1" required></div><div><label>Pool seats</label><input id="se" type="number" min="2" value="20" required></div></div>
@@ -87,4 +88,5 @@ export function adminV() {
       S.flights.length ? `<div class="grid">${S.flights.map(adminCard).join("")}</div>` :
         `<div class="empty card">Nothing published yet.<br><br><button class="btn" onclick="go('admin','add')">Add a flight</button> <button class="btn ghost" onclick="demo()">Load demo flights</button></div>`);
 }
-Object.assign(window, { manage, resetPw, setLimit, setLogo, addFlight, delFlight, demo });
+function logoPreview() { const el = $("#lp"); if (!el) return; const al = $("#al").value.trim(), fn = $("#fn").value.trim(); el.innerHTML = al || fn ? badge({ airline: al, number: fn, color: COLORS[0] }) : "" }
+Object.assign(window, { logoPreview, manage, resetPw, setLimit, setLogo, addFlight, delFlight, demo });

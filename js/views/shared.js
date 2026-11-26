@@ -3,7 +3,7 @@ import { S, esc, COLORS, badge } from "../state.js";
 const DEF_AIR = [["IndiGo", 0], ["Air India", 1], ["Vistara", 2], ["SpiceJet", 3], ["Akasa Air", 4], ["Emirates", 5], ["Qatar Airways", 6], ["Singapore Airlines", 0]];
 function airlines() {
   const m = new Map();
-  S.flights.forEach(f => { const o = m.get(f.airline); if (!o || (!o.logo && f.logo)) m.set(f.airline, { airline: f.airline, color: f.color, logo: f.logo }) });
+  S.flights.forEach(f => { const o = m.get(f.airline); if (!o || (!o.logo && f.logo)) m.set(f.airline, { airline: f.airline, number: f.number, color: f.color, logo: f.logo }) });
   DEF_AIR.forEach(([a, c]) => { if (!m.has(a)) m.set(a, { airline: a, color: COLORS[c] }) });
   return [...m.values()].slice(0, 12);
 }

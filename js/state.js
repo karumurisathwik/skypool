@@ -1,4 +1,5 @@
 import { CONFIG, loadConfig } from "./config.js";
+import { airlineCode, logoSrcs } from "./logos.js";
 
 export const COLORS = ["#1668e3", "#d1322b", "#0a8f6a", "#8a3ffc", "#e07b00", "#0b6e99", "#c2185b"];
 export const $ = s => document.querySelector(s);
@@ -65,7 +66,20 @@ export const lss = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) 
 export const favs = () => S.user ? lsj("sp_fav_" + S.user.id, []) : [];
 export const isFav = id => favs().includes(id);
 export const gone = f => new Date(f.date + "T" + f.time) < new Date();
-export const badge = f => `<div class="badge" style="background:${esc(f.color)}">${f.logo ? `<img src="${esc(f.logo)}" alt="">` : esc(initials(f.airline))}</div>`;
+export const badge = f => {
+  if (f.logo) return `<div class="badge" style="background:${esc(f.color)}"><img src="${esc(f.logo)}" alt=""></div>`; /* uploaded by admin wins */
+  const code = airlineCode(f), ini = initials(f.airline || "");
+  if (!code) return `<div class="badge" style="background:${esc(f.color)}">${esc(ini)}</div>`;
+  const srcs = logoSrcs(code);
+  return `<div class="badge auto" style="background:${esc(f.color)}"><img src="${esc(srcs[0])}" alt="" loading="lazy" data-srcs="${esc(srcs.join("|"))}" data-i="0" data-ini="${esc(ini)}" onerror="logoFail(this)"></div>`;
+};
+/* logo failed to load: try the next source, finally fall back to the coloured initials badge */
+window.logoFail = img => {
+  const list = (img.dataset.srcs || "").split("|"), i = +img.dataset.i + 1;
+  if (i < list.length) { img.dataset.i = i; img.src = list[i]; return }
+  img.onerror = null; const b = img.parentNode; if (!b) return;
+  b.classList.remove("auto"); b.textContent = img.dataset.ini || "✈";
+};
 export const shrink = file => new Promise(res => {
   const r = new FileReader();
   r.onload = () => { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"), s = Math.min(im.width, im.height); x.drawImage(im, (im.width - s) / 2, (im.height - s) / 2, s, s, 0, 0, 128, 128); res(c.toDataURL("image/png")) }; im.onerror = () => res(""); im.src = r.result };
