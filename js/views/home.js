@@ -1,5 +1,6 @@
 import { S, esc, store, members, unitPrice, discount, daysTo, fmtDate, inr, badge, gone, favs, isFav, lss } from "../state.js";
 import { render, go } from "../ui.js";
+import "../actions.js";
 
 export function toggleFav(id) { if (!S.user) return go("login"); const a = favs(), i = a.indexOf(id); i < 0 ? a.push(id) : a.splice(i, 1); lss("sp_fav_" + S.user.id, a); render() }
 
@@ -49,7 +50,7 @@ function calcV() {
 export function card(f) {
   const m = members(f), n = m.length, mine = S.user && !S.user.admin && m.find(j => j.uid === S.user.id);
   const full = n >= f.seats, d = daysTo(f);
-  return `<div class="card"><div class="fh">${badge(f)}
+  return `<div class="card clk" tabindex="0" role="link" aria-label="${esc(f.airline)} ${esc(f.number)}, ${esc(f.from)} to ${esc(f.to)} – view details" onclick="openFlight('${esc(f.id)}',event)" onkeydown="openFlight('${esc(f.id)}',event)"><div class="fh">${badge(f)}
   <div><b>${esc(f.airline)}</b><span>Flight ${esc(f.number)}</span></div>${S.user?.admin ? "" : `<button class="star ${isFav(f.id) ? "on" : ""}" title="Save pool" onclick="toggleFav('${esc(f.id)}')">${isFav(f.id) ? "★" : "☆"}</button>`}</div>
   <div class="route"><span>${esc(f.from)}</span><i></i><span>${esc(f.to)}</span></div>
   <div class="meta"><span>📅 ${fmtDate(f.date)}</span><span>🕒 ${esc(f.time)}</span><span>${d >= 0 ? d + " days left" : "Departed"}</span></div>
@@ -57,7 +58,7 @@ export function card(f) {
   <div class="price"><b>${inr(unitPrice(f, Math.max(n, 1)))}</b><s>${inr(f.fare)}</s><span class="tag">−${discount(Math.max(n, 1))}%</span></div>
   <div class="bar"><div style="width:${Math.min(100, n / f.seats * 100)}%"></div></div>
   <div class="meta"><span>${n}/${f.seats} in pool</span></div>
-  <div class="chips">${m.map(j => `<span class="chip ${j.uid === S.user?.id ? "y" : ""} ${j.confirmed ? "c" : ""}">${esc(j.uid)}${j.confirmed ? " ✓" : ""}</span>`).join("") || '<span class="note">Be the first to join.</span>'}</div>
+  <div class="more">View details ›</div>
   ${mine ? '<span class="tag">You’re in this pool</span>' : S.user?.admin ? "" : `<button class="btn" ${full || d < 0 || gone(f) ? "disabled" : ""} onclick="join('${esc(f.id)}')">${full ? "Pool full" : "Join this flight pool"}</button>`}
   </div>`;
 }

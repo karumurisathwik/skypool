@@ -32,8 +32,8 @@ Airlines or admins publish a **flight pool**. Travellers browse pools and join w
 ### For travellers
 - **Welcome, login and signup pages** with name, 10-digit ID and password
 - **Browse flight pools** with airline logo, route, date, live countdown and a pool progress bar
-- **Join or leave a pool.** Other travellers only see member IDs, never names
-- **Confirm your seat** within 3 weeks of departure
+- **Join or leave a pool.** Cards show only the pool count; tap a card for the flight details page, where logged-in travellers see member IDs (never names)
+- **Confirm your seat** within 3 weeks of departure. A confirmed passenger can **apply for cancellation**; the ticket is cancelled once the admin approves
 - **Search, filter and sort** by airline, destination, date, and fare
 - **Favourite pools** and a **notification centre** (joined, confirmation open, pool almost full, departure soon)
 - **Savings calculator** to see what a pool of any size would cost you
@@ -41,8 +41,9 @@ Airlines or admins publish a **flight pool**. Travellers browse pools and join w
 
 ### For admins
 - **Add flights:** number, route, date, time, base fare, pool limit, logo upload
-- **See every member** of a pool with name, ID and confirmation status
-- **Confirm, unconfirm or remove members**, and edit pool details and limit
+- **Open a pool's details page** to see every passenger with name, ID and status, and **remove** passengers (only passengers confirm their own seat)
+- **Cancel requests tab:** approve (passenger removed from the pool) or decline cancellation requests
+- **Edit pool details and limit**
 - **Dashboard stats:** pools, travellers, confirmations, total money saved
 - **People tab** with search and **reset a customer's password**
 - **Load demo flights** with one click, handy for presentations
@@ -62,9 +63,10 @@ Airlines or admins publish a **flight pool**. Travellers browse pools and join w
 
 ## Project structure
 ```
-index.html  login.html  signup.html  mine.html  account.html  admin.html   ← one page each
+index.html  login.html  signup.html  mine.html  flight.html  account.html  admin.html   ← one page each
 css/styles.css                                                            ← all styles
 js/config.js        loads runtime config from /api/config
+js/actions.js       join/confirm/cancel/remove actions shared by pages
 js/state.js         state, Firestore/localStorage store, helpers
 js/ui.js            header, notifications, theme, navigation, render loop
 js/views/*.js       page templates + actions (home, welcome, auth, mine, account, admin)

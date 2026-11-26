@@ -2,7 +2,7 @@
 import { S, $, esc, store, ready, lsj, lss, favs, members, daysTo } from "./state.js";
 import { CONFIG } from "./config.js";
 
-export const PAGES = { home: "/", welcome: "/", login: "/login", signup: "/signup", mine: "/mine", admin: "/admin", account: "/account" };
+export const PAGES = { home: "/", welcome: "/", login: "/login", signup: "/signup", mine: "/mine", flight: "/flight", admin: "/admin", account: "/account" };
 let CUR = null;
 
 /* ---------- theme ---------- */
@@ -85,8 +85,8 @@ export function start(cfg) {
   render();
   try { const t = sessionStorage.getItem("sp_toast"); if (t) { sessionStorage.removeItem("sp_toast"); setTimeout(() => toast(t), 150) } } catch (e) {}
   if (cfg.watch) {
-    store.watch("flights", a => { S.flights = a; render() });
-    store.watch("joins", a => { S.joins = a; render(); cfg.onJoins?.() });
+    store.watch("flights", a => { S.flights = a; S.loaded.flights = true; render() });
+    store.watch("joins", a => { S.joins = a; S.loaded.joins = true; render(); cfg.onJoins?.() });
   }
 }
 

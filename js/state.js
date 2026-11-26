@@ -6,7 +6,7 @@ export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;"
 
 export const S = {
   view: "home", user: null, flights: [], joins: [], msg: "", tab: "flights", q: "", fa: "", fo: "", fz: "", fd: "",
-  sort: "date", favOnly: false, bell: false, cf: "", ct: 2, mg: "", names: {}, lv: null, dl: null, _k: "", rm: null, pq: ""
+  sort: "date", favOnly: false, bell: false, cf: "", ct: 2, mg: "", names: {}, lv: null, dl: null, _k: "", rm: null, pq: "", cx: "", ar: "", loaded: { flights: false, joins: false }
 };
 try { const t = localStorage.getItem("sp_theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}
 try { S.user = JSON.parse(sessionStorage.getItem("sp_user") || "null") } catch (e) {}
